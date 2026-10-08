@@ -13,7 +13,7 @@ It was built for support / solutions-type roles, but the title list, pay floor, 
 - Your google email and app password
 - Optional: Theirstack API keys
  ```bash
- Note: are never stored in the code. They come from environment variables.
+  Note: Your goggle app password and API key are never stored in the code. They come from environment variables stored locally on your PC.
  ```
 
 ## What it searches
@@ -119,3 +119,9 @@ All of them are listed in `.gitignore`.
 ## License
 
 This project is licensed under the MIT License - see the [MIT](LICENSE) file for details.
+
+
+
+
+## Note
+`Feel free to modify this script to better suit your job search. All the best and pray you helps land that dream job!!`
