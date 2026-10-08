@@ -97,6 +97,9 @@ EXCLUDE_TITLE_PATTERNS = [
     r"\bhead\s+of\b",
     r"\bsoftware\s+engineer",          # "Ads Data Solutions Engineering" software roles
     r"\bvice\s+president\b",          # "Regional Vice President, ..."
+    r"\bon[-\s]?site\b",              # "Technical Support Specialist (Onsite - Florida)"
+    r"\bhybrid\b",
+    r"\bin[-\s]office\b",
 ]
 
 # Only include jobs posted within this many days
@@ -109,7 +112,7 @@ MIN_SALARY = 95000
 # Jobright needs your login, so it is a click-through link in the email, not a
 # searched source. In your browser, open Jobright with your filters applied
 # (e.g. "Support Engineer, US"), then paste that page's address here.
-JOBRIGHT_URL = "https://jobright.ai/"
+JOBRIGHT_URL = ""
 
 # Greenhouse board names. Set to [] to skip Greenhouse.
 COMPANIES = [
@@ -123,12 +126,12 @@ COMPANIES = [
 # Ashby board names: the last part of jobs.ashbyhq.com/<name>. Copy the spelling
 # from the URL exactly. Set to [] to skip Ashby. (These are just examples; a wrong
 # name prints a "not found" warning and is skipped.)
-ASHBY_BOARDS = ["ashby", "linear", "sanity", "1password", "clickup", "supabase", "plaid", "mdcalc"]
+ASHBY_BOARDS = ["ashby", "linear", "sanity", "1password", "clickup", "supabase", "plaid", "mdcalc", "hyperbolic"]
 
 # Lever board names: the last part of jobs.lever.co/<name>. Set to [] to skip Lever.
 # (Examples only: a wrong name prints a "not found" warning and is skipped. Run
 # find_boards.py to discover more companies that use Lever.)
-LEVER_BOARDS = ["jumpcloud", "truv", "redoxengine"]  # names seen in real jobs.lever.co links
+LEVER_BOARDS = ["jumpcloud", "truv", "redoxengine", "robust-ai"]  # names seen in real jobs.lever.co links
 
 # Remote-first companies whose jobs often list only a country ("United States")
 # with no word "remote". For these only, a country-only location counts as remote.
@@ -205,6 +208,13 @@ log = logging.getLogger("job_alert")
 # DATA MODEL
 # =====================================================
 
+def company_key(name: str) -> str:
+    """'Robust.AI', 'robust-ai' and 'DataPath, Inc.' compare equal to 'robustai' / 'datapath'."""
+    s = re.sub(r"[^a-z0-9 ]", "", str(name or "").lower().replace("&", " and "))
+    s = re.sub(r"\b(?:inc|llc|ltd|corp|corporation|incorporated|co|company)\b", "", s)
+    return re.sub(r"\s+", "", s)
+
+
 @dataclass
 class Job:
     company: str
@@ -229,7 +239,7 @@ class Job:
 
     @property
     def dedupe_key(self) -> tuple[str, str]:
-        return (self.title.lower(), self.company.lower())
+        return (self.title.lower().strip(), company_key(self.company))
 
     def as_row(self) -> dict:
         return {
@@ -350,7 +360,7 @@ SENT_KEY_DAYS = 120  # a repeat of the same title+company is ignored for this lo
 
 
 def seen_key(job) -> str:
-    return "key::" + job.title.lower().strip() + "||" + job.company.lower().strip()
+    return "key::" + job.title.lower().strip() + "||" + company_key(job.company)
 
 
 def keys_from_csv() -> set[str]:
@@ -363,7 +373,7 @@ def keys_from_csv() -> set[str]:
                 title = (row.get("title") or "").lower().strip()
                 company = (row.get("company") or "").lower().strip()
                 if title and (row.get("date_found") or "9999")[:10] >= horizon:
-                    keys.add(f"key::{title}||{company}")
+                    keys.add(f"key::{title}||{company_key(company)}")
     except OSError:
         pass
     return keys
@@ -1571,6 +1581,12 @@ ATTRIBUTION = ("Job data from Greenhouse, Lever, Workable, Ashby, Remotive (remo
                "Jobright / JobAssist exports.")
 
 
+def jobright_link() -> str:
+    """Your Jobright results page, or '' when not set (the bare home page is only a sign-in screen)."""
+    url = JOBRIGHT_URL.strip()
+    return "" if url.rstrip("/") in ("", "https://jobright.ai", "http://jobright.ai", "jobright.ai") else url
+
+
 def build_plain(jobs: list[Job], google_url: str, indeed_url: str, linkedin_url: str) -> str:
     lines = [
         "", "DAILY REMOTE JOB REPORT", "=" * 60, "",
@@ -1580,7 +1596,7 @@ def build_plain(jobs: list[Job], google_url: str, indeed_url: str, linkedin_url:
         f"Indeed Search:\n{indeed_url}", "",
         f"LinkedIn Search:\n{linkedin_url}", "",
         f"JobAssist Search:\n{build_jobassist_url()}", "",
-        f"Jobright (your saved filters):\n{JOBRIGHT_URL}", "",
+        *([f"Jobright (your saved filters):\n{jobright_link()}", ""] if jobright_link() else []),
         "=" * 60, "",
     ]
 
@@ -1623,11 +1639,16 @@ def build_html(jobs: list[Job], google_url: str, indeed_url: str, linkedin_url: 
         '<html><body style="font-family:Arial,sans-serif;max-width:640px;margin:auto">'
         "<h2>Daily Remote Job Report</h2>"
         f"<p>Search window: last {DAYS_BACK} days (since {CUTOFF_DATE:%Y-%m-%d})</p>"
-        f'<p><a href="{e(google_url, quote=True)}">Google Jobs search</a> &middot; '
-        f'<a href="{e(indeed_url, quote=True)}">Indeed search</a> &middot; '
-        f'<a href="{e(linkedin_url, quote=True)}">LinkedIn search</a> &middot; '
-        f'<a href="{e(build_jobassist_url(), quote=True)}">JobAssist search</a> &middot; '
-        f'<a href="{e(JOBRIGHT_URL, quote=True)}">Jobright</a></p>'
+        "<p>" + " &middot; ".join(
+            f'<a href="{e(url, quote=True)}">{label}</a>'
+            for label, url in (
+                ("Google Jobs search", google_url),
+                ("Indeed search", indeed_url),
+                ("LinkedIn search", linkedin_url),
+                ("JobAssist search", build_jobassist_url()),
+                ("Jobright", jobright_link()),
+            ) if url
+        ) + "</p>"
         f"<h3>New Remote Jobs: {len(jobs)}</h3>"
         + "".join(cards)
         + f'<p style="color:#888;font-size:12px">{e(ATTRIBUTION)}</p></body></html>'

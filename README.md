@@ -1,11 +1,20 @@
 # Job Alert Bot
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A small Python script that looks through company job boards and a few job sites for **remote, US-eligible** jobs matching the titles you choose, then emails you a daily list of **only the new ones**.
 
 It was built for support / solutions-type roles, but the title list, pay floor, and companies are all settings at the top of `ats_job_alert.py`, so you can aim it at any field.
 
+## Requirements
+
 - No installs. It uses only Python's built-in libraries (Python 3.10 or newer).
-- Your email password and API keys are never stored in the code. They come from environment variables.
+- Powershell
+- Your google email and app password
+- Optional: Theirstack API keys
+ ```bash
+ Note: are never stored in the code. They come from environment variables.
+ ```
 
 ## What it searches
 
@@ -25,7 +34,8 @@ These filters are heuristics, so always open the posting and check before you ap
 
 ## Quick start (about 10 minutes)
 
-**1. Get a Gmail App Password.** Turn on 2-Step Verification for your Google account, then create an App Password at <https://myaccount.google.com/apppasswords>. It is 16 characters. This is *not* your normal password.
+**1. Get a Gmail App Password.
+** Turn on 2-Step Verification for your Google account, then create an App Password at <https://myaccount.google.com/apppasswords>. It is 16 characters. This is *not* your normal password.
 
 **2. Set three environment variables.**
 
@@ -105,4 +115,4 @@ All of them are listed in `.gitignore`.
 
 ## License
 
-MIT. See `LICENSE`.
+This project is licensed under the MIT License - see the [MIT](LICENSE) file for details.
