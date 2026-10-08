@@ -1,0 +1,43 @@
+name: Daily job alert
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 13:00 UTC every day; change to suit your time zone
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+# Lets the job save its "already sent" memory back to the repo
+permissions:
+  contents: write
+
+# Never run two at once (would double-email)
+concurrency:
+  group: job-alert
+  cancel-in-progress: false
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run job alert
+        env:
+          JOB_ALERT_EMAIL_FROM: ${{ secrets.JOB_ALERT_EMAIL_FROM }}
+          JOB_ALERT_EMAIL_PASSWORD: ${{ secrets.JOB_ALERT_EMAIL_PASSWORD }}
+          JOB_ALERT_EMAIL_TO: ${{ secrets.JOB_ALERT_EMAIL_TO }}
+          THEIRSTACK_API_KEY: ${{ secrets.THEIRSTACK_API_KEY }}   # optional
+        run: python ats_job_alert.py
+
+      - name: Save the already-sent memory
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f seen_jobs.txt jobs.csv theirstack_usage.json 2>/dev/null || true
+          git diff --staged --quiet || (git commit -m "Update sent jobs" && git push)
