@@ -124,4 +124,4 @@ This project is licensed under the MIT License - see the [MIT](LICENSE) file for
 
 
 ## Note
-`Feel free to modify this script to better suit your job search. All the best and pray this helps land that dream job!!`
+`Feel free to modify this script to better suit your job search. All the best and pray it helps you land that dream job! 🙏`
