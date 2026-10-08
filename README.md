@@ -113,6 +113,9 @@ All of them are listed in `.gitignore`.
 - FlexJobs is paid and has no public job-seeker API, so it is not supported.
 - Not affiliated with Greenhouse, Lever, Ashby, Workable, TheirStack, Jobright, JobAssist, or any listed employer.
 
+## Preview / Screenshot / Walkthrough Video
+
+![alt text](image.png)
 ## License
 
 This project is licensed under the MIT License - see the [MIT](LICENSE) file for details.
