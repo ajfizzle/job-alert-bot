@@ -79,6 +79,9 @@ TITLE_KEYWORDS = [
     "platform support",
     "product support",
     "product support engineer",
+    "support software engineer",
+    "support specialist",          # also matches "Senior Support Specialist"; broad, so not sent to TheirStack
+    "technical customer engineer",
 ]
 
 # Solutions Engineer / Solutions Analyst roles are often pre-sales (supporting the sales
