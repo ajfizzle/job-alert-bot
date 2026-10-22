@@ -34,8 +34,14 @@ These filters are heuristics, so always open the posting and check before you ap
 
 ## Quick start (about 10 minutes)
 
-**1. Get a Gmail App Password.
-** Turn on 2-Step Verification for your Google account, then create an App Password at <https://myaccount.google.com/apppasswords>. It is 16 characters. This is *not* your normal password.
+**1. Get a Gmail App Password.** Turn on 2-Step Verification for your Google account, then create an App Password at <https://myaccount.google.com/apppasswords>. It is 16 characters. This is *not* your normal password.
+
+ ```bash
+ Note: If you see the message in the screenshot below, it may mean that 2-Step Verification is not enabled on your account. Set up 2FA before proceeding. Please, see Google Link below on how to "create Google app password and setup 2FA"
+ ```
+- [Create Google App](https://support.google.com/accounts/answer/185833)
+- [Set up 2FA](https://support.google.com/accounts/answer/185839)
+ ![alt text](image-1.png)
 
 **2. Set three environment variables.**
 
