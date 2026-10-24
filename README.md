@@ -21,7 +21,7 @@ The script was originally built for technical support and solutions engineering 
 - [Preview and Walkthrough](#preview-and-walkthrough)
 - [License](#license)
 
-## Requirements
+## - Requirements
 
 Before getting started, you will need:
 
@@ -40,7 +40,7 @@ Optional:
 
 **No third-party Python packages are required.** The script uses Python's standard library.
 
-## What It Searches
+## - What It Searches
 
 | Source | How It Works | Requirements |
 |---|---|---|
@@ -52,7 +52,7 @@ Optional:
 
 Source availability and job coverage may vary.
 
-## How Filtering Works
+## - How Filtering Works
 
 The script filters job listings using your configured settings:
 
@@ -65,7 +65,7 @@ The script filters job listings using your configured settings:
 
 These filters are automated estimates, not guarantees. Always open the original job posting to verify the location, salary, remote-work eligibility, and application requirements.
 
-## Quick Start
+## - Quick Start
 
 Follow these steps in order. Windows and macOS instructions are provided where commands differ.
 
@@ -96,6 +96,8 @@ Note: If you see the message in the screenshot below, it may mean that 2-Step Ve
 1. Visit the [official Python downloads page](https://www.python.org/downloads/).
 2. Download and install a supported Python 3 version compatible with the script.
 3. If offered, select **Add Python to PATH** during installation.
+   
+    `Note: The default installation location is recommended. Alternatively, you can install Python in a dedicated directory on the C drive, such as C:\Python313\, if needed.`
 4. Download and install Git from [git-scm.com](https://git-scm.com/downloads), if needed.
 
 Open PowerShell and verify the installation:
@@ -198,7 +200,7 @@ The first successful run may email all currently eligible jobs. Subsequent runs 
 
 Keep the tracking files between runs to prevent duplicate alerts.
 
-## Customize Your Search
+## - Customize Your Search
 
 Open `ats_job_alert.py` in your preferred editor and look for the settings section near the top.
 
@@ -246,7 +248,7 @@ python3 find_boards.py my_names.txt
 
 The script prints matching board identifiers that you can review and add to the appropriate settings in `ats_job_alert.py`.
 
-## Optional Integrations
+## - Optional Integrations
 
 ### Jobright and JobAssist
 
@@ -296,7 +298,7 @@ TheirStack usage may consume API credits. The script's credit tracking, caching,
 
 Without a configured key, the optional source should be skipped.
 
-## Schedule Daily Runs
+## - Schedule Daily Runs
 
 You can run the script manually or configure it to execute automatically.
 
@@ -352,7 +354,7 @@ Depending on the repository's workflow configuration, you may need to enable wri
 
 **Important:** GitHub Actions cannot use your local Jobright or JobAssist export files unless you upload them to the workflow environment. Do not commit sensitive exports to the repository just to make those integrations work.
 
-## Files Created
+## - Files Created
 
 The script may create or update the following files:
 
@@ -368,7 +370,7 @@ Keep the job-tracking files between runs to prevent duplicates.
 
 Check `.gitignore` to confirm which generated files are excluded from Git. Excluding a file from Git does not remove it from a repository if it was committed previously.
 
-## Limitations and Security
+## - Limitations and Security
 
 - **GitHub security rule of thumb:** Before deploying to public repo, check that it contains no sensitive information, such as passwords, API keys, email credentials, personal data or private job-search exports. Add sensitive files to `.gitignore` before committing them. Remember that `.gitignore` does not remove files that have already been committed or pushed to GitHub. If sensitive information has been exposed, remove it from the repository as appropriate and immediately rotate or revoke the affected credentials.
 - **US remote jobs:** The default filters target jobs eligible for applicants in the United States. Other regions may require changes to the filtering logic.
@@ -381,12 +383,12 @@ Check `.gitignore` to confirm which generated files are excluded from Git. Exclu
 - **Privacy:** Treat exports, logs and tracking files as potentially sensitive.
 - **No affiliation:** This project is not affiliated with Greenhouse, Lever, Ashby, Workable, TheirStack, Jobright, JobAssist or any listed employer.
 
-## Preview and Walkthrough
+## - Preview and Walkthrough
 Here is a preview of email received:
 
 ![Job Alert Bot preview](image.png)
 
-## License
+## - License
 
 This project is licensed under the [MIT License](LICENSE).
 
