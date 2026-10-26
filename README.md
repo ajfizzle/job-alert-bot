@@ -171,7 +171,7 @@ remote: Enumerating objects: ...
 Receiving objects: 100% (...), done.
 ```
 
-> **Two different names, on purpose.** The project **folder** is called `job-alert-bot` (it is named after the repository), and the **script** inside it is called `ats_job_alert.py`. You `cd` into the folder (`cd job-alert-bot`) and then run the script file (`ats_job_alert.py`). There is no folder called `ats_job_alert`.
+> **Two different names, on purpose.** The project **folder** is called `job-alert-bot` (it is named after the repository), and the **script** inside it is called `ats_job_alert.py`. You `cd` into the folder (`cd job-alert-bot`) and then run the script file (`ats_job_alert.py`).
 
 The `git clone` command creates a new `job-alert-bot` folder inside your current directory. The `cd job-alert-bot` command moves into that folder and prints nothing. If you want the project somewhere else, navigate to that parent directory (with `cd`) before running `git clone`.
 
