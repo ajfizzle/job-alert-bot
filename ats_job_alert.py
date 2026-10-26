@@ -957,8 +957,9 @@ def fetch_weworkremotely() -> Iterator[Job]:
             company, title = "", raw_title
 
         try:
-            posted_dt = parsedate_to_datetime(item.findtext("pubDate"))
-            if posted_dt.tzinfo is None:
+            pub_date = item.findtext("pubDate")
+            posted_dt = parsedate_to_datetime(pub_date) if pub_date else None
+            if posted_dt is not None and posted_dt.tzinfo is None:
                 posted_dt = posted_dt.replace(tzinfo=timezone.utc)
         except (TypeError, ValueError):
             posted_dt = None
@@ -1134,7 +1135,8 @@ def _ja_records(node):
 def _ja_location(rec: dict, where: str, assume_remote=None) -> str:
     if assume_remote is None:
         assume_remote = JOBASSIST_ASSUME_REMOTE
-    nested = rec.get("location") if isinstance(rec.get("location"), dict) else {}
+    location = rec.get("location")
+    nested = location if isinstance(location, dict) else {}
     model = (_ja_text(_pick(rec, _JA_MODEL)) + " " + text(nested.get("workplace_type"))).lower()
     flag = rec["isRemote"] if "isRemote" in rec else rec.get("remote")
     if flag is None:
@@ -1823,6 +1825,7 @@ def main() -> int:
 
     subject = f"Remote Job Alert - {len(jobs)} New Jobs - Last {DAYS_BACK} Days"
 
+    assert cfg is not None
     try:
         send_email(cfg, subject, plain, build_html(jobs, google_url, indeed_url, linkedin_url))
     except Exception as ex:
