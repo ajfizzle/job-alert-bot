@@ -26,7 +26,7 @@ The default configuration is aimed at remote, US-eligible technical support, app
 - [Preview and Walkthrough](#preview-and-walkthrough)
 - [License](#license)
 
-## - Requirements
+## Requirements
 
 Before getting started, you will need:
 
@@ -41,7 +41,7 @@ Before getting started, you will need:
 
 The scripts use only Python's standard library, so there is nothing to install with `pip`. If Python and Git are already installed, verify their versions in Step 2 and skip the installation instructions for any tool that is already installed.
 
-## - What It Searches
+## What It Searches
 
 | Source | How It Works | Requirements |
 |---|---|---|
@@ -53,7 +53,7 @@ The scripts use only Python's standard library, so there is nothing to install w
 
 Source availability and job coverage may vary.
 
-## - How Filtering Works
+## How Filtering Works
 
 The script filters job listings using your configured settings:
 
@@ -66,7 +66,7 @@ The script filters job listings using your configured settings:
 
 These filters are automated estimates, not guarantees. Always open the original job posting to verify the location, salary, remote-work eligibility, and application requirements.
 
-## - Quick Start
+## Quick Start
 
 Follow these steps in order. Windows and macOS instructions are provided where commands differ.
 
