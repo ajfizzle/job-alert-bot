@@ -1807,7 +1807,8 @@ def main() -> int:
 
     if args.dry_run:
         print(plain)
-        log.info("Dry run: nothing sent or saved.")
+        log.info("Dry run finished: no email was sent and the job-tracking files were not "
+                 "updated (details are still written to %s).", LOG_FILE.name)
         return 0
 
     # Old jobs never get newer, so remember them and stop re-checking.
@@ -1815,6 +1816,10 @@ def main() -> int:
         save_seen(too_old, seen)
     except OSError as ex:
         log.error("Could not update %s: %s", SEEN_FILE.name, ex)
+
+    if not jobs:
+            log.info("No new jobs found; email not sent.")
+            return 0
 
     subject = f"Remote Job Alert - {len(jobs)} New Jobs - Last {DAYS_BACK} Days"
 
