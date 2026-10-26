@@ -135,7 +135,7 @@ Open PowerShell on Windows or Terminal on macOS and run:
 
 ```bash
 git clone https://github.com/ajfizzle/job-alert-bot.git
-cd job-alert-bot
+cd ats_job_alert
 ```
 
 ### Step 4: Configure Email Credentials
