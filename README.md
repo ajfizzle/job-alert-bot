@@ -134,8 +134,8 @@ Cloning downloads the project files to your computer.
 Open PowerShell on Windows or Terminal on macOS and run:
 
 ```bash
-git clone https://github.com/ajfizzle/ats-job-alert.git
-cd ats-job-alert
+git clone https://github.com/ajfizzle/job-alert-bot.git
+cd job-alert-bot
 ```
 
 ### Step 4: Configure Email Credentials
@@ -144,7 +144,7 @@ The script reads email credentials from environment variables rather than storin
 
 Replace the example values below with your own Gmail address and App Password.
 
-#### Windows — PowerShell
+#### Windows - PowerShell
 
 Run these commands in the same PowerShell window you will use to run the script:
 
