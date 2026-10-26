@@ -190,7 +190,7 @@ You should see a message similar to `On branch main` and `Your branch is up to d
 The script reads these environment variables when it runs:
 
 - `JOB_ALERT_EMAIL_FROM` - Gmail address used to send alerts.
-- `JOB_ALERT_EMAIL_PASSWORD` - Gmail App Password.
+- `JOB_ALERT_EMAIL_PASSWORD` - Gmail App Password created in Step 1.
 - `JOB_ALERT_EMAIL_TO` - recipient address or comma-separated list of recipients. If omitted, the sender address is used.
 
 **Replace `your-actual-email@gmail.com` in the commands below with your own Gmail address** (on both lines). Use the same address for both if you want the alerts sent to yourself. Then enter the App Password through a hidden prompt. **Do not type the App Password inside a command**, because terminals keep a history of commands.
@@ -236,7 +236,7 @@ echo ${#JOB_ALERT_EMAIL_PASSWORD}
 
 Expected result: `16`
 
-Do not share terminal screenshots that might expose credentials. If you copied the App Password, clear your clipboard afterwards (Windows: press the Windows key + V, then **Clear all**).
+Note: Do NOT share terminal screenshots that might expose credentials. If you copied the App Password, clear your clipboard afterwards (Windows: press the Windows key + V, then **Clear all**).
 
 ### Step 5: Test without sending an email
 
