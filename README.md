@@ -1,4 +1,3 @@
-
 # Job Alert Bot
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -37,7 +36,7 @@ Before getting started, you will need:
 - A terminal application:
   - **Windows:** PowerShell or the VS Code terminal.
   - **macOS / Linux:** Terminal or the VS Code terminal.
-- Optional: a TheirStack API key and your own Jobright/JobAssist export files.
+- Optional: a TheirStack API key, and local Jobright/JobAssist files (see [Jobright and JobAssist](#jobright-and-jobassist)).
 
 The scripts use only Python's standard library, so there is nothing to install with `pip`. If Python and Git are already installed, verify their versions in Step 2 and skip the installation instructions for any tool that is already installed.
 
@@ -49,7 +48,7 @@ The scripts use only Python's standard library, so there is nothing to install w
 | Workable | Searches its public job-search endpoint and optional company boards | No API key |
 | Remotive, Remote OK and We Work Remotely | Reads public job feeds | No API key |
 | TheirStack (optional) | Searches job listings across companies using its API | API key and available credits |
-| Jobright and JobAssist (optional) | Processes job results exported from your logged-in browser session | Your own accounts and saved JSON files |
+| Jobright and JobAssist (optional) | Reads JSON files you supply locally; nothing is fetched from these services | Your own files, used only as each service's terms allow |
 
 Source availability and job coverage may vary.
 
@@ -381,21 +380,13 @@ The script prints matching board identifiers that you can review and add to the 
 
 ### Jobright and JobAssist
 
-These integrations use job-search results that you export yourself from your own logged-in browser session. The script does not log in to these services on your behalf.
+**Optional, and used at your own discretion.** The script can also read job results from two local files, `jobright.json` and `jobassist.json`, if you place them in the project folder. It never logs in to, contacts, or downloads anything from Jobright or JobAssist. It only reads files you provide.
 
-General workflow:
+**Check each service's Terms of Service before creating these files.** Many job platforms restrict copying or automated processing of their data. Only use this feature if the service's terms allow it, for example through an export feature the service officially provides. This project does not provide instructions for extracting data from these services, and you are responsible for how you obtain these files.
 
-1. Sign in to the relevant service using your browser.
-2. Open the browser's Developer Tools, usually with `F12`.
-3. Select the **Network** tab.
-4. Find the request that returns the job listings.
-5. If available, right-click the relevant request and select **Copy → Copy response**.
-6. Save the response as `jobright.json` or `jobassist.json` in the project directory.
-7. Run the main script to process the saved results.
+If neither file is present, these sources are skipped automatically. To turn them off completely, set `USE_JOBRIGHT_FILE = False` and `USE_JOBASSIST_FILE = False` in `ats_job_alert.py`.
 
-The export procedure may vary by website and browser. Re-export the data periodically to refresh your results.
-
-To inspect company boards found in a Jobright export:
+If you have a `jobright.json` file, `jobright_boards.py` lists the company job boards it mentions, so you can add them to the settings:
 
 **Windows - PowerShell:**
 
@@ -409,7 +400,7 @@ py jobright_boards.py jobright.json
 python3 jobright_boards.py jobright.json
 ```
 
-**Security warning:** These exports may contain account-related or other personal information. Do not commit them to GitHub or share them publicly. Confirm that they are covered by `.gitignore`.
+**Privacy:** These files may contain personal or account information. Never commit them to GitHub or share them publicly. Confirm that they are listed in `.gitignore`.
 
 ### TheirStack
 
@@ -516,7 +507,7 @@ The workflow must pass these secrets to the script as environment variables. It 
 
 Scheduled GitHub Actions runs use UTC and may start later than the scheduled minute. Check the actual cron expressions in `.github/workflows/job-alert.yml`; comments in the file or README do not change the schedule.
 
-**Important:** GitHub Actions cannot use your local Jobright or JobAssist export files unless you upload them to the workflow environment. Do not commit sensitive exports to the repository just to make those integrations work.
+**Important:** GitHub Actions cannot use your local Jobright or JobAssist files. Do not commit them to the repository to make those integrations work.
 
 ## Files Created
 
@@ -536,24 +527,26 @@ Check `.gitignore` to confirm which generated files are excluded from Git. Exclu
 
 ## Limitations and Security
 
-- **GitHub security rule of thumb:** Before making a repository public, check that it contains no sensitive information, such as passwords, API keys, email credentials, personal data or private job-search exports. Add sensitive files to `.gitignore` before committing them. Remember that `.gitignore` does not remove files that have already been committed or pushed to GitHub. If sensitive information has been exposed, remove it from the repository as appropriate and immediately rotate or revoke the affected credentials.
+- **GitHub security rule of thumb:** Before making a repository public, check that it contains no sensitive information, such as passwords, API keys, email credentials, personal data or private job-search files. Add sensitive files to `.gitignore` before committing them. Remember that `.gitignore` does not remove files that have already been committed or pushed to GitHub. If sensitive information has been exposed, remove it from the repository as appropriate and immediately rotate or revoke the affected credentials.
 - **Your App Password and API keys:** Never share them, commit them, or include them in screenshots or logs. If one may have been exposed, delete it and create a new one.
+- **Third-party terms:** Each job source has its own terms of service. Use each source only in ways its terms allow, keep attribution in the email (Remote OK and Remotive require a link back and a source credit), and do not republish the job data.
 - **US remote jobs:** The default filters target jobs eligible for applicants in the United States. Other regions may require changes to the filtering logic.
 - **Source availability:** Job boards and APIs can change, become unavailable, or return incomplete results.
 - **Workable:** Its search integration may rely on an undocumented public endpoint that can change without notice.
 - **Salary information:** Listings without salary information may not be filtered reliably by compensation.
 - **Remote eligibility:** Always verify the original job posting before applying.
-- **Run frequency:** Once per day is generally sufficient for a personal job search. Respect each source's terms and rate limits.
+- **Run frequency:** Once per day is generally sufficient for a personal job search. Respect each source's rate limits; for example, Remotive asks for no more than four fetches per day, so avoid many test runs in a row.
 - **FlexJobs:** Not supported through a public job-seeker API.
-- **Privacy:** Treat exports, logs and tracking files as potentially sensitive.
-- **No affiliation:** This project is not affiliated with Greenhouse, Lever, Ashby, Workable, TheirStack, Jobright, JobAssist or any listed employer.
+- **Privacy:** Treat local Jobright/JobAssist files, logs and tracking files as potentially sensitive.
+- **No affiliation:** This project is not affiliated with Greenhouse, Lever, Ashby, Workable, Remotive, Remote OK, We Work Remotely, TheirStack, Jobright, JobAssist or any listed employer.
 
-## - Preview and Walkthrough
-Here is a preview of email received:
+## Preview and Walkthrough
+
+Here is a preview of the email received:
 
 ![Job Alert Bot preview](image.png)
 
-## - License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
 
