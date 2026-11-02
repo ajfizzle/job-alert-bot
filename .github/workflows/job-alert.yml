@@ -20,10 +20,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Check out repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -35,9 +35,20 @@ jobs:
           THEIRSTACK_API_KEY: ${{ secrets.THEIRSTACK_API_KEY }}   # optional
         run: python ats_job_alert.py
 
+      # Runs even if the step above failed, so jobs that were already emailed
+      # are still remembered and not sent again tomorrow.
       - name: Save the already-sent memory
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f seen_jobs.txt jobs.csv theirstack_usage.json 2>/dev/null || true
-          git diff --staged --quiet || (git commit -m "Update sent jobs" && git push)
+          # Add each file separately: one missing file must not block the others.
+          for f in seen_jobs.txt jobs.csv theirstack_usage.json; do
+            if [ -f "$f" ]; then git add -f "$f"; fi
+          done
+          if git diff --staged --quiet; then
+            echo "Nothing new to save."
+          else
+            git commit -m "Update sent jobs [skip ci]"
+            git push
+          fi
