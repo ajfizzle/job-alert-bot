@@ -18,6 +18,11 @@ jobs:
   alert:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      JOB_ALERT_EMAIL_FROM: ${{ secrets.JOB_ALERT_EMAIL_FROM }}
+      JOB_ALERT_EMAIL_PASSWORD: ${{ secrets.JOB_ALERT_EMAIL_PASSWORD }}
+      JOB_ALERT_EMAIL_TO: ${{ secrets.JOB_ALERT_EMAIL_TO }}
+      THEIRSTACK_API_KEY: ${{ secrets.THEIRSTACK_API_KEY }}   # optional
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -28,12 +33,12 @@ jobs:
           python-version: "3.12"
 
       - name: Run job alert
-        env:
-          JOB_ALERT_EMAIL_FROM: ${{ secrets.JOB_ALERT_EMAIL_FROM }}
-          JOB_ALERT_EMAIL_PASSWORD: ${{ secrets.JOB_ALERT_EMAIL_PASSWORD }}
-          JOB_ALERT_EMAIL_TO: ${{ secrets.JOB_ALERT_EMAIL_TO }}
-          THEIRSTACK_API_KEY: ${{ secrets.THEIRSTACK_API_KEY }}   # optional
+        if: ${{ env.JOB_ALERT_EMAIL_FROM != '' && env.JOB_ALERT_EMAIL_PASSWORD != '' }}
         run: python ats_job_alert.py
+
+      - name: Skip run when email secrets are missing
+        if: ${{ env.JOB_ALERT_EMAIL_FROM == '' || env.JOB_ALERT_EMAIL_PASSWORD == '' }}
+        run: echo "::warning::Skipping job alert run because JOB_ALERT_EMAIL_FROM and/or JOB_ALERT_EMAIL_PASSWORD is not configured."
 
       - name: Save the already-sent memory
         run: |
