@@ -19,15 +19,32 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      # Skip the run (with a visible warning) if the email secrets are not set.
+      - name: Check email secrets
+        id: secrets
+        env:
+          EMAIL_FROM: ${{ secrets.JOB_ALERT_EMAIL_FROM }}
+          EMAIL_PASSWORD: ${{ secrets.JOB_ALERT_EMAIL_PASSWORD }}
+        run: |
+          if [ -z "$EMAIL_FROM" ] || [ -z "$EMAIL_PASSWORD" ]; then
+            echo "::warning::JOB_ALERT_EMAIL_FROM or JOB_ALERT_EMAIL_PASSWORD is not set. Add them under Settings > Secrets and variables > Actions. Skipping this run."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Check out repo
+        if: steps.secrets.outputs.ok == 'true'
         uses: actions/checkout@v5
 
       - name: Set up Python
+        if: steps.secrets.outputs.ok == 'true'
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Run job alert
+        if: steps.secrets.outputs.ok == 'true'
         env:
           JOB_ALERT_EMAIL_FROM: ${{ secrets.JOB_ALERT_EMAIL_FROM }}
           JOB_ALERT_EMAIL_PASSWORD: ${{ secrets.JOB_ALERT_EMAIL_PASSWORD }}
@@ -38,7 +55,7 @@ jobs:
       # Runs even if the step above failed, so jobs that were already emailed
       # are still remembered and not sent again tomorrow.
       - name: Save the already-sent memory
-        if: always()
+        if: always() && steps.secrets.outputs.ok == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
